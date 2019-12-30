@@ -1,4 +1,4 @@
-import { Component, AfterContentChecked, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, AfterContentChecked, OnInit, Input, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 //import  * as FileSaver from 'angular-file-saver';
@@ -7,6 +7,7 @@ import { NgForm, FormGroup, FormBuilder } from '@angular/forms';
 import { RegexPattern } from '../lib/regex.pattern';
 import { HttpService } from '../lib/http';
 import { Broadcaster } from '../lib/broadcast.service';
+import { MatPaginator, MatTableDataSource } from '@angular/material';
 
 declare var jquery:any;
 declare var $:any;
@@ -45,7 +46,7 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
   private current : string = '';
   private reportUrl : string;
   private meta : {};
-  private data : {};
+  private data = new MatTableDataSource([]);
 
   paramMap     : string;
   currentPage  : number = 1;
@@ -55,6 +56,7 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
   selectedRow  : object = [];
   RegexPattern : RegexPattern;
 
+  @ViewChild(MatPaginator , {static: false}) paginator: MatPaginator;
   constructor(private http : HttpService, private route: ActivatedRoute, private router : Router, private broadcast : Broadcaster, private fb: FormBuilder) { 
     var id = this.getXmlReportName();
     this.reportUrl    = environment.serviceBaseUrl+'xml-report/'+id;
@@ -147,6 +149,8 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
   }
 
   callRestService(page : number) : void {
+    this.reportBusy = true;
+    
     var url   = this.meta['restUrl'];
     var title = this.meta['name'];
     var body  = this.buildRequestContent(page);
@@ -155,8 +159,11 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
 
     if (!valid) return;
     this.http.post(url, body).subscribe(data => {
+      var elements : Element[] = [];
+      elements = Object.assign(elements, data);
       console.log('xml-report-data',data);
-      this.data = data;
+      this.data = new MatTableDataSource<Element>(elements);
+      this.data.paginator = this.paginator;
       if (!child)
         this.broadcast.broadcast('TitleChange', body['params']['title'] ? body['params']['title'] : title);
       var instance = this;

@@ -62,7 +62,7 @@
     <div class="row">
         <div class="col-md-12" [formGroup]="gridForm">
             <mat-card class="bridge-card mt-0" >
-                <app-data-loading-spinner *ngIf="(!data && !isChildComponent()) || reportBusy" class="teal-bar"></app-data-loading-spinner>
+                <app-data-loading-spinner *ngIf="reportBusy" class="teal-bar"></app-data-loading-spinner>
                 <div class="bridge-header mt-3" *ngIf="meta">
                     <div class="d-flex w-100 justify-content-between">
                         <div *ngIf="!meta['hideExport']">
@@ -77,7 +77,7 @@
                         </div>
                     </div>
                 </div>
-                <mat-card-content *ngIf="data">
+                <mat-card-content *ngIf="data && meta">
                     <table mat-table [dataSource]="data" id="reportTable"  class="w-100 bridge-table">
                         <ng-container matColumnDef="{{column['id']}}" *ngFor="let column of this.meta['schema']['fields']">
                             <th mat-header-cell *matHeaderCellDef>{{column['name']}}</th>
