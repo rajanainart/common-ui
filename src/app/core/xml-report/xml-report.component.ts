@@ -161,6 +161,7 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
         this.broadcast.broadcast('TitleChange', body['params']['title'] ? body['params']['title'] : title);
       var instance = this;
       setTimeout(function() {instance.bindData();},500);
+      this.reportBusy = false;
     });
   }
 
@@ -358,7 +359,10 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
     this.fieldManager.deleteField(name);
   }
 
+  private reportBusy : boolean = false;
+
   onDisplayClick(type : string) : void {
+    this.reportBusy = true;
     this.displayType = type;
     if (this.displayType == '') {
       this.currentPage = 1;
@@ -394,6 +398,7 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
           { "responseType" : responseType }).subscribe(data => {
             XmlReportComponent.downloadFile(this.displayType == 'json' ? JSON.stringify(data) : data, 
                                             this.displayType, this.meta['name']+'.'+this.displayType);
+            this.reportBusy = false;
       });
       this.currentPage = 1;
     }
