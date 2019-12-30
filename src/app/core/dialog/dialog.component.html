@@ -1,0 +1,204 @@
+<div class="dialog-box success" *ngIf="data.type=='success'">
+    <h2 mat-dialog-title>
+        <mat-icon>done</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <div [innerHtml]="data.message"></div>
+        <mat-dialog-actions>
+            <button mat-raised-button color="primary" class="primary-btn small"  [mat-dialog-close]="true" >
+                Ok
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box success" *ngIf="data.type=='log'">
+       
+        <div class="dialog-content">
+            <div class="log-scroll"  [innerHtml]="data.message"></div>
+            <mat-dialog-actions>
+                <button  [mat-dialog-close]="true" mat-raised-button color="primary" class="primary-btn small" >
+                    Ok
+                </button>
+            </mat-dialog-actions>
+        </div>
+    </div>
+
+<div class="dialog-box error" *ngIf="data.type=='error'">
+    <h2 mat-dialog-title>
+        <mat-icon>error</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <p class="fs-15">{{data.message}}</p>
+        <p *ngIf="data.showTryLater">Please try again later.</p>
+        <mat-expansion-panel *ngIf="data.details" class="mat-elevation-z">
+            <mat-expansion-panel-header>
+                <mat-panel-title>Error Details</mat-panel-title>
+            </mat-expansion-panel-header>
+            <div [innerHtml]="data.details"></div>
+        </mat-expansion-panel>
+
+        <mat-dialog-actions>
+            <button  [mat-dialog-close]="true" mat-raised-button color="primary" class="primary-btn small" >
+                Ok
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box warn" *ngIf="data.type=='warn'">
+    <h2 mat-dialog-title>
+        <mat-icon>warning</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <p [innerHTML]="data.message"></p>
+        <mat-dialog-actions>
+            <button [mat-dialog-close]="true" mat-raised-button color="primary" class="primary-btn small" >
+                Ok
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box confirm" *ngIf="data.type=='confirmAI'">
+    <h2 mat-dialog-title>
+        <mat-icon>warning</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <p>
+            Selected record is going to be {{data.currentStatus?'deactivated':'activated'}}.
+        </p>
+        <p>Do you want to continue?</p>
+        <mat-dialog-actions>
+            <button mat-raised-button color="primary" class="primary-btn small" >
+                {{data.currentStatus?'Deactivate':'Activate'}}
+            </button>
+            <button mat-button [mat-dialog-close]="false" mat-stroked-button class="btn-gray lh-42">
+                Cancel
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box confirm" *ngIf="data.type=='confirmDelete'">
+    <h2 mat-dialog-title>
+        <mat-icon>warning</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <ng-container *ngIf="data.message; else defaultDelete">
+            <p>{{data.message}}</p>
+        </ng-container>
+        <ng-template #defaultDelete>
+            <p>Selected record is going to be deleted.</p>
+            <p>Are you sure you want to continue?</p>
+        </ng-template>
+        <mat-dialog-actions>
+            <button  [mat-dialog-close]="true" button mat-raised-button color="primary" class="primary-btn small">
+                Delete
+            </button>
+            <button  [mat-dialog-close]="false" button mat-raised-button color="primary" class="primary-btn small">
+                Cancel
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box confirm" *ngIf="data.type=='confirmOkCancel'">
+    <h2 mat-dialog-title>
+        <mat-icon>warning</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <p>{{data.message}}</p>
+        <div [innerHtml]="data.htmlContent" class="data-container mat-expansion-panel mat-elevation-z"></div>
+        <mat-dialog-actions>
+            <button mat-button [mat-dialog-close]="true" mat-flat-button color="primary" class="lh-42">
+                Ok
+            </button>
+            <button mat-button [mat-dialog-close]="false" mat-stroked-button class="btn-gray lh-42">
+                Cancel
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box confirm" *ngIf="data.type=='confirmYesNo'">
+    <h2 mat-dialog-title>
+        <mat-icon>warning</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <p>{{data.message}}</p>
+        <mat-dialog-actions>
+            <button mat-raised-button color="primary" class="primary-btn small" [mat-dialog-close]="true">
+                Yes
+            </button>
+            <button mat-raised-button color="primary" class="primary-btn small" [mat-dialog-close]="false">
+                No
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box confirm" *ngIf="data.type=='confirmContinueCancel'">
+    <h2 mat-dialog-title>
+        <mat-icon>warning</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <p>{{data.message}}</p>
+        <mat-dialog-actions>
+            <button mat-button [mat-dialog-close]="true" mat-flat-button color="primary" class="lh-42">
+                Continue
+            </button>
+            <button mat-button [mat-dialog-close]="false" mat-stroked-button class="btn-gray lh-42">
+                Cancel
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box confirm" *ngIf="data.type=='confirmVoid'">
+    <h2 mat-dialog-title>
+        <mat-icon>warning</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <ng-container *ngIf="data.message; else defaultVoid">
+            <p>{{data.message}}</p>
+        </ng-container>
+        <ng-template #defaultVoid>
+            <p>Selected document is going to be voided.</p>
+            <p>Are you sure you want to continue?</p>
+        </ng-template>
+        <mat-dialog-actions>
+            <button mat-button [mat-dialog-close]="true" mat-flat-button color="primary" class="lh-42">
+                Void Document
+            </button>
+            <button mat-button [mat-dialog-close]="false" mat-stroked-button class="btn-gray lh-42">
+                Cancel
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>
+
+<div class="dialog-box confirm" *ngIf="data.type=='selectCommodity'">
+    <h2 mat-dialog-title>
+        <mat-icon>warning</mat-icon>
+    </h2>
+    <div class="dialog-content">
+        <p>{{data.message}}</p>
+        <mat-form-field>
+            <mat-label>{{Quarter}}</mat-label>
+            <mat-select [formControl]="selectedList"  >
+                <mat-option *ngFor="let quarter of data.list" [value]="quarter">
+                {{quarter.TEXT}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-dialog-actions>
+            <button  [mat-dialog-close]="selectedList" mat-raised-button color="primary" class="primary-btn small"   [disabled]="!selectedList.value" >
+                Ok
+            </button>
+            <button  [mat-dialog-close]="false" mat-raised-button color="primary" class="primary-btn small btn-gray" >
+                Cancel
+            </button>
+        </mat-dialog-actions>
+    </div>
+</div>

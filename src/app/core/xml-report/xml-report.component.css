@@ -1,0 +1,58 @@
+.margin-top-10px {
+    margin-top: 10px;
+}
+.margin-bottom-10px {
+    margin-bottom: 10px;
+}
+.margin-left-10px {
+    margin-left: 10px;
+}
+
+.margin-0px {
+    margin: 0px;
+}
+
+.margin-2px {
+    margin: 2px;
+}
+
+.padding-2px {
+    padding: 2px;
+}
+
+.padding-0px {
+    padding: 0px;
+}
+
+.padding-5px {
+    padding: 5px;
+}
+
+.width-100 {
+    width : 100%;
+}
+
+.width-90 {
+    width : 90%;
+}
+
+.margin-bottom-m5px {
+    margin-bottom: -5px;
+}
+
+.width-25 {
+    min-width: 25%;
+    width : 25%;
+}
+
+.datepicker-overflow {
+    overflow: visible !important;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.error-message {
+    color : red;
+}

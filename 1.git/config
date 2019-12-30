@@ -1,0 +1,10 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "common-ui-remote"]
+	url = https://gitlab.dell.com/globalops/BPM/DellDigitalSupplyChain/MakeTheRightCommitments/mtrc_snop_common/ux-common.git
+	fetch = +refs/heads/*:refs/remotes/common-ui-remote/*

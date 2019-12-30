@@ -1,0 +1,68 @@
+.dialog-box {
+    padding: 0;
+    text-align: center;
+    word-break: break-all;
+}
+.dialog-box h2{
+    font-size: 22px;
+    margin-bottom: 0;
+    line-height: normal;
+    padding: 0;
+}
+
+.dialog-box h2 mat-icon {
+    vertical-align: bottom;
+}
+
+.dialog-box p{
+    margin: 15px 0 0;
+    font-weight: bold;
+}
+
+.mat-dialog-actions{
+    justify-content: center;
+    margin: 0;
+    padding: 24px 0 0;
+}
+
+.mat-dialog-actions button{
+    margin: 0 10px;
+}
+
+.success h2{
+    color: #6ea204;
+}
+
+.success p{
+    font-size: 15px;
+    text-align: center;
+}
+
+.fs-15 {
+    font-size: 15px;
+}
+
+.error h2{   
+    color: #ce1126;
+}
+
+.warn h2, .confirm h2{
+    color: #ee6411;
+}
+
+.mat-expansion-panel{
+    border: 1px solid rgba(0,0,0,0.1);
+    margin: 15px 0 0;
+}
+
+.mat-expansion-panel-header {
+    font-size: inherit;
+    padding: 0 10px;    
+    height: 33px !important;
+}
+
+.data-container{
+    padding: 5px 10px;
+    text-align: left;
+    font-size: 13px;
+}

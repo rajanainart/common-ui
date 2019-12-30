@@ -1,0 +1,118 @@
+<div class="container title mb-3 mt-2" *ngIf="meta">
+    <span class="title">{{meta['name']}}</span>
+</div>
+<form #xmlReportForm="ngForm">
+    <div class="container margin-top-10px" *ngIf="fieldManager && fieldManager.getAllXmlFields().length > 0" [hidden]="filterVisibility">
+        <mat-card>
+            <div class="form-group row margin-0px padding-0px margin-bottom-m5px" *ngFor="let field of fieldManager.getAllXmlFields()">
+                <div class="input-group input-group-sm mb-3 col-md-4 padding-0px">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="{{field.fieldId}}_Operator" style="width: 125px;">{{field.fieldName}}</label>
+                    </div>
+                    <select class="form-control form-control-sm" id="{{field.fieldId}}_Operator" name="{{field.fieldId}}_Operator" [(ngModel)]="field.operator">
+                        <option *ngFor="let filter of field.getReportFilters()" 
+                            [ngValue]="filter.getOperator()">{{filter.getOperatorName()}}</option>
+                    </select>
+                </div>
+                <div class="col-md-4 form-control-sm" *ngIf="field.operator == 'IN' || field.operator == 'NOT IN'">
+                        <input type="text" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
+                        required (focus)="initSelect2(field.fieldId);" [(ngModel)]="field.value1" />
+                </div>
+                <div class="col-md-2 padding-0px" *ngIf="field.operator != 'IN' && field.operator != 'NOT IN'">
+                    <input type="text" class="form-control form-control-sm" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
+                        required [(ngModel)]="field.value1" #name="ngModel"
+                        *ngIf="field.fieldType == 'TEXT' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
+                    <input type="text" class="form-control form-control-sm" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
+                        required [pattern]="RegexPattern.INTEGER_REGEX" #integer1="ngModel" 
+                        [(ngModel)]="field.value1" *ngIf="field.fieldType == 'INTEGER' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
+                    <input type="text" class="form-control form-control-sm" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
+                        required [pattern]="RegexPattern.NUMERIC_REGEX" 
+                        [(ngModel)]="field.value1" *ngIf="field.fieldType == 'NUMERIC' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
+                    <input type="text" class="form-control form-control-sm datepicker" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
+                        required
+                        [(ngModel)]="field.value1" *ngIf="field.fieldType == 'DATE' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
+                </div>
+                <div class="col-md-2 padding-0px" *ngIf="field.operator != 'IN' && field.operator != 'NOT IN'">
+                    <input type="text" class="form-control form-control-sm" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" [(ngModel)]="field.value2" 
+                        required [pattern]="RegexPattern.INTEGER_REGEX" 
+                        *ngIf="field.fieldType == 'INTEGER' && (field.operator == 'BETWEEN' || field.operator == 'NOT BETWEEN')">
+                    <input type="text" class="form-control form-control-sm" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" [(ngModel)]="field.value2" 
+                        required [pattern]="RegexPattern.NUMERIC_REGEX" 
+                        *ngIf="field.fieldType == 'NUMERIC' && (field.operator == 'BETWEEN' || field.operator == 'NOT BETWEEN')">
+                    <input type="text" class="form-control form-control-sm datepicker" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" [(ngModel)]="field.value2" 
+                        required
+                        *ngIf="field.fieldType == 'DATE'    && (field.operator == 'BETWEEN' || field.operator == 'NOT BETWEEN')">
+                </div>
+                <div class="col-md-4 form-control-sm error-message">
+                    <span *ngIf="!isFieldValid(xmlReportForm, field.fieldId, 1, 2)">&nbsp;Invalid input1</span>
+                    <span *ngIf="!isFieldValid(xmlReportForm, field.fieldId, 2, 2)">&nbsp;Invalid input2</span>
+                </div>
+            </div>
+            <div class="form-group row margin-0px padding-0px margin-bottom-m5px">
+                <div class="col-md-12">
+                    <button mat-stroked-button color="primary" (click)="onDisplayClick('');">Apply</button>
+                    <button mat-stroked-button color="link" class="margin-left-10px" (click)="filterVisibility = !filterVisibility">Cancel</button>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</form>
+
+<div class="container margin-bottom-10px">
+    <div class="row">
+        <div class="col-md-12" [formGroup]="gridForm">
+            <mat-card class="bridge-card mt-0" >
+                <app-data-loading-spinner *ngIf="!data && !isChildComponent()" class="teal-bar"></app-data-loading-spinner>
+                <div class="bridge-header mt-3" *ngIf="meta">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div *ngIf="!meta['hideExport']">
+                            <a href="javascript:void(0)" (click)="onDisplayClick(e)"  *ngFor="let e of getReportMeta()['export']">
+                                <img class="icon" src="/assets/svg/{{e}}.svg" width="25px" />
+                            </a>
+                        </div>
+                        <div *ngIf="!meta['hideFilter']">
+                            <a href="javascript:void(0)" (click)="filterVisibility = !filterVisibility">
+                                <i class="fa fa-filter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <mat-card-content *ngIf="data">
+                    <table mat-table [dataSource]="data" id="reportTable"  class="w-100 bridge-table">
+                        <ng-container matColumnDef="{{column['id']}}" *ngFor="let column of this.meta['schema']['fields']">
+                            <th mat-header-cell *matHeaderCellDef>{{column['name']}}</th>
+                            <td mat-cell *matCellDef="let element" class="col-wd-130">{{[element[column['id']]]}}</td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="getColumnNames(); sticky:true"></tr>
+                        <tr mat-row *matRowDef="let row; columns: getColumnNames();"></tr>
+                        </table>
+                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [length]="data.length"></mat-paginator>
+                    </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive pmd-card pmd-z-depth" *ngIf="data">
+    <div class="pmd-card-body margin-2px padding-2px" *ngIf="isEditableTable || customActions.length > 0">
+        <div class="form-group row margin-2px padding-2px">
+            <div class="col-sm-1 padding-2px" *ngIf="isEditableTable">
+                <button type="submit" class="btn btn-default btn-sm pmd-checkbox-ripple-effect" 
+                    (click)="broadcastUpdate()" style="min-width:30px">
+                    <i class="material-icons md-dark pmd-xs">save</i>
+                    Update
+                </button>
+            </div>
+            <div class="col-sm-3 padding-2px" *ngIf="customActions.length > 0">
+                <div *ngFor="let action of customActions">
+                    <button *ngIf="containsEditableColumn(action)" type="submit" class="btn btn-default btn-sm pmd-checkbox-ripple-effect" 
+                        (click)="broadcastCallback(action['callback'])" style="min-width:30px">
+                        <i class="material-icons md-dark pmd-xs">{{action['icon']}}</i>
+                        {{action['text']}}
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-8 padding-2px"></div>
+        </div>
+    </div>
+</div>
