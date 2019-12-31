@@ -1,13 +1,12 @@
 import { Component, AfterContentChecked, OnInit, Input, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-//import  * as FileSaver from 'angular-file-saver';
 import { ReportFieldManager } from './xml-report.field';
 import { NgForm, FormGroup, FormBuilder } from '@angular/forms';
 import { RegexPattern } from '../lib/regex.pattern';
 import { HttpService } from '../lib/http';
 import { Broadcaster } from '../lib/broadcast.service';
-import { MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 
 declare var jquery:any;
 declare var $:any;
@@ -84,7 +83,7 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
     var event1 = this.broadcast.on<object>('XmlReportDataChanged_'+this.getXmlReportName());
     if (event1)
         event1.subscribe(xmlData => {
-          this.bindData();
+          //this.bindData();
         });
   }
 
@@ -143,7 +142,12 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
       for (var key in this.route.snapshot.params)
         body['params'][key] = this.route.snapshot.params[key];
     }
-    body['params']['currentPage'] = this.currentPage = page;
+    if (this.meta && this.meta['pagination'] == 'SERVER') {
+      body['params']['currentPage'] = this.currentPage = page;
+      body['params']['pageSize'   ] = this.meta['pageSizes'].length > 0 ? this.meta['pageSizes'][0] : this.meta['schema']['pageSize'];
+    }
+    else if (this.meta && this.meta['pagination'] == 'CLIENT')
+      body['params']['currentPage'] = -1;
     console.log('filter',body);
     return body;
   }
@@ -159,15 +163,20 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
 
     if (!valid) return;
     this.http.post(url, body).subscribe(data => {
+      console.log('xml-report-data', data);
+
       var elements : Element[] = [];
-      elements = Object.assign(elements, data);
-      console.log('xml-report-data',data);
+      elements  = Object.assign(elements, data);
       this.data = new MatTableDataSource<Element>(elements);
       this.data.paginator = this.paginator;
+
+      console.log('xml-report-data', this.data);
+      
+      if (this.meta && this.meta['pagination'] == 'SERVER')
+        this.data._updatePaginator(data[0]['total-records']);
+
       if (!child)
         this.broadcast.broadcast('TitleChange', body['params']['title'] ? body['params']['title'] : title);
-      var instance = this;
-      setTimeout(function() {instance.bindData();},500);
       this.reportBusy = false;
     });
   }
@@ -210,98 +219,6 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
       }
     });
     return msg;
-  }
-
-  broadcastUpdate() {
-    var msg = this.validateEditableControls();
-    if (msg != 'VALID') alert(msg);
-    
-    var data = this.data['data'];
-    $('.data-table-control').each(function() {
-      var index = $(this).attr('current-row-index');
-      var id    = $(this).attr('id');
-      var type  = $(this).attr('data-type');
-      var value = $(this).val();
-
-      if (type != 'CHECKBOX')
-        data[parseInt(index)][id] = value;
-      else
-        data[parseInt(index)][id] = $(this).prop('checked') ? 'T' : 'F';
-    });
-    console.log('xml-report-update-data',data);
-    this.broadcast.broadcast('XmlReportDataUpdate_'+this.xmlReportName+this.paramMap, data);
-  } 
-
-  containsEditableColumn(action : object) : boolean {
-    if (action['common-action']) {
-      if (action['common-action'] == 'true')
-        return true;
-    }
-    else {
-      var editable = false;
-      for (let row of this.meta['schema']['fields']) {
-        if (row['editable'] == 'true') {
-          editable = true;
-          break;
-        }
-      }
-      return editable && ((this.data['data'].length > 0 && $('.data-table-control').size() != 0) || this.data['data'].length == 0);
-    }
-  }
-
-  bindData() {
-    var reportName = this.getXmlReportName();
-    $('#divXmlReport_'+reportName).remove();
-    $('#divReport_'+reportName).append(XmlReportComponent.getXmlReportDiv(reportName));
-
-    var id   = "tblXmlReport_"+reportName;
-    var cols = [];
-    this.bindSelects(id, cols);
-
-    /*var gridData = [];
-    if (this.meta['groupByChildExpression'] && this.meta['groupByParentExpression']) {
-      cols.push({'className':'details-control', 'orderable':false, 'data':null, 'defaultContent': ''});
-      for (let row of this.data['data']) {
-        if (eval(this.meta['groupByParentExpression']))
-          gridData.push(row);
-      }
-    }
-    else
-      gridData = this.data['data'];*/
-
-    this.isEditableTable = false;
-    for (let row of this.meta['schema']['fields']) {
-      $('#'+id+' > thead tr').append('<th>'+row['name']+'</th>');
-      var type = XmlReportComponent.getDataTableColumnType(row['type']);
-      var col  = {'data':row['id'], 'type':type, 'visible':!this.isColumnExcluded(row['id'])};
-      if (type == 'datetime') {
-        col['format'] = 'mm/dd/YYYY';
-        col['fmt'] = 'mm/dd/YYYY';
-      }
-      if (row['editable'] == 'true') {
-        this.isEditableTable = true;
-        col['render'] = function (data, type, currentRow, settings) {
-          if (currentRow['EDITABLE'] && currentRow['EDITABLE'] == '1' && (row['type'] == 'TEXT' || row['type'] == 'INTEGER' || row['type'] == 'NUMERIC'))
-            return '<input class="form-control input-sm text-right data-table-control" style="width:100px" id="'+row['id']+'" name="'+row['id']+'" type="text" value='+data+' '+
-                   'msg="Row:'+(parseInt(settings['row'])+1)+', Invalid value for '+row['name']+'" current-row-index="'+settings['row']+'" data-type="'+row['type']+'">';
-          else if (currentRow['EDITABLE'] && currentRow['EDITABLE'] == '1' && row['type'] == 'CHECKBOX') {
-            if (data == 'T')
-              return '<input class="data-table-control" type="checkbox" checked="checked" id="'+row['id']+'" name="'+row['id']+'" '+
-                     'current-row-index="'+settings['row']+'" data-type="CHECKBOX">';
-            else
-              return '<input class="data-table-control" type="checkbox" id="'+row['id']+'" name="'+row['id']+'" '+
-                     'current-row-index="'+settings['row']+'" data-type="CHECKBOX">';
-          }
-          else
-            return data;
-        }
-      }
-      cols.push(col);
-    }
-  }
-
-  broadcastCallback(callback : string) : void {
-    this.broadcast.broadcast(this.getXmlReportName()+'_'+callback, this.getReportData());
   }
 
   bindSelects(id : string, cols : object[]) : void {
@@ -459,26 +376,14 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
         "cancelable": false
     });
     a.dispatchEvent(clickEvent);
-
-    //var params = this.route.snapshot.queryParams;
-    //window.open(url);
-    //FileSaver.saveAs(blob, (params['title']?params['title']:this.meta['name']) + '.'+this.displayType);
   }
-
-  static applyDataTableCss(id : string) {
-    //apply css styles by using style-name, as class is not rendered properly
-    $('#'+id+'_wrapper').css('font-size', '12px');
-    $('#'+id+'_wrapper').css('margin', '6px');
-    $('#'+id+'_length').css('display', 'none');
-  }
-
-  static getXmlReportDiv(reportName : string) : string {
-    return '<div id="divXmlReport_'+reportName+'">'+
-           '<table id="tblXmlReport_'+reportName+'" class="display compact" style="width:100%">'+
-           '<thead><tr></tr></thead>'+
-           '<tbody></tbody>'+
-           '</table>'+
-           '</div>';
+  
+  onPageChange(event : PageEvent) : void {
+    console.log(event);
+    if (this.meta['pagination'] == 'SERVER') {
+      this.reportBusy = true;
+      this.broadcast.broadcast('XmlReportPageChange_'+this.xmlReportName+this.paramMap, event.pageIndex+1);
+    }
   }
 
   static getDataTableColumnType(type : string) : string {

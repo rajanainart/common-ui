@@ -86,33 +86,13 @@
                         <tr mat-header-row *matHeaderRowDef="getColumnNames(); sticky:true"></tr>
                         <tr mat-row *matRowDef="let row; columns: getColumnNames();"></tr>
                         </table>
-                        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [length]="data.length"></mat-paginator>
+                        <mat-paginator *ngIf="meta['pagination'] == 'CLIENT'" [pageSizeOptions]="meta['pageSizes']"
+                                        [length]="data.filteredData.length"></mat-paginator>
+                        <mat-paginator *ngIf="meta['pagination'] == 'SERVER' && data.filteredData.length > 0" 
+                                        [pageIndex]="data.filteredData[0]['current-page']-1" [pageSizeOptions]="meta['pageSizes']" 
+                                        [length]="data.filteredData[0]['total-records']" (page)="onPageChange($event)"></mat-paginator>
                     </mat-card-content>
             </mat-card>
-        </div>
-    </div>
-</div>
-
-<div class="table-responsive pmd-card pmd-z-depth" *ngIf="data">
-    <div class="pmd-card-body margin-2px padding-2px" *ngIf="isEditableTable || customActions.length > 0">
-        <div class="form-group row margin-2px padding-2px">
-            <div class="col-sm-1 padding-2px" *ngIf="isEditableTable">
-                <button type="submit" class="btn btn-default btn-sm pmd-checkbox-ripple-effect" 
-                    (click)="broadcastUpdate()" style="min-width:30px">
-                    <i class="material-icons md-dark pmd-xs">save</i>
-                    Update
-                </button>
-            </div>
-            <div class="col-sm-3 padding-2px" *ngIf="customActions.length > 0">
-                <div *ngFor="let action of customActions">
-                    <button *ngIf="containsEditableColumn(action)" type="submit" class="btn btn-default btn-sm pmd-checkbox-ripple-effect" 
-                        (click)="broadcastCallback(action['callback'])" style="min-width:30px">
-                        <i class="material-icons md-dark pmd-xs">{{action['icon']}}</i>
-                        {{action['text']}}
-                    </button>
-                </div>
-            </div>
-            <div class="col-sm-8 padding-2px"></div>
         </div>
     </div>
 </div>
