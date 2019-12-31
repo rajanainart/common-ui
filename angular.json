@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "mtrc-ui": {
+    "common-ui": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/mtrc-ui",
+            "outputPath": "dist/common-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -34,7 +34,9 @@
               "src/styles.css",
               "src/theming.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js"
+            ],
             "es5BrowserSupport": true
           },
           "configurations": {
@@ -101,20 +103,20 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "mtrc-ui:build",
+            "browserTarget": "common-ui:build",
             "proxyConfig": "proxy.conf.json"
           },
           
           "configurations": {
             "production": {
-              "browserTarget": "mtrc-ui:build:production"
+              "browserTarget": "common-ui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "mtrc-ui:build"
+            "browserTarget": "common-ui:build"
           }
         },
         "test": {
@@ -127,7 +129,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -148,7 +152,7 @@
         }
       }
     },
-    "mtrc-ui-e2e": {
+    "common-ui-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "prefix": "",
@@ -157,11 +161,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "mtrc-ui:serve"
+            "devServerTarget": "common-ui:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "mtrc-ui:serve:production"
+              "devServerTarget": "common-ui:serve:production"
             }
           }
         },
@@ -177,5 +181,5 @@
       }
     }
   },
-  "defaultProject": "mtrc-ui"
+  "defaultProject": "common-ui"
 }
