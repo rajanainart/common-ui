@@ -75,11 +75,6 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
     this.paramMap = '';
     for (var key in this.route.snapshot.queryParams)
       this.paramMap+='_'+this.route.snapshot.queryParams[key];
-    var event = this.broadcast.on<number>('XmlReportPageChange_'+this.getXmlReportName()+this.paramMap);
-    if (event)
-      event.subscribe(page => {
-        this.callRestService(page);
-      });
     var event1 = this.broadcast.on<object>('XmlReportDataChanged_'+this.getXmlReportName());
     if (event1)
         event1.subscribe(xmlData => {
@@ -129,7 +124,7 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
     return true;
   }
 
-  buildRequestContent(page : number) : {} {
+  buildRequestContent(page : number, pageSize : number = 0) : {} {
     var fm     = this.fieldManager;
     var body   = {};
     body['filter'] = fm != null ? fm.getAllXmlFieldsWithFilter() : [];
@@ -144,7 +139,10 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
     }
     if (this.meta && this.meta['pagination'] == 'SERVER') {
       body['params']['currentPage'] = this.currentPage = page;
-      body['params']['pageSize'   ] = this.meta['pageSizes'].length > 0 ? this.meta['pageSizes'][0] : this.meta['schema']['pageSize'];
+      if (pageSize != 0)
+        body['params']['pageSize'] = pageSize;
+      else
+        body['params']['pageSize'] = this.meta['pageSizes'].length > 0 ? this.meta['pageSizes'][0] : this.meta['schema']['pageSize'];
     }
     else if (this.meta && this.meta['pagination'] == 'CLIENT')
       body['params']['currentPage'] = -1;
@@ -152,12 +150,12 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
     return body;
   }
 
-  callRestService(page : number) : void {
+  callRestService(page : number, pageSize : number = 0) : void {
     this.reportBusy = true;
     
     var url   = this.meta['restUrl'];
     var title = this.meta['name'];
-    var body  = this.buildRequestContent(page);
+    var body  = this.buildRequestContent(page, pageSize);
     var valid = this.validateFilters(body['filter']);
     var child = this.isChildComponent();
 
@@ -382,7 +380,7 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
     console.log(event);
     if (this.meta['pagination'] == 'SERVER') {
       this.reportBusy = true;
-      this.broadcast.broadcast('XmlReportPageChange_'+this.xmlReportName+this.paramMap, event.pageIndex+1);
+      this.callRestService(event.pageIndex+1, event.pageSize);
     }
   }
 
