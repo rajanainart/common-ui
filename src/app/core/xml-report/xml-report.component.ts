@@ -181,14 +181,14 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
 
   ngAfterContentChecked(): void {
     try {
-      $('.datepicker').datetimepicker({ 'format' : 'MM/DD/YYYY' });
+      /*$('.datepicker').datetimepicker({ 'format' : 'MM/DD/YYYY' });
       $('.datepicker').keydown(function(event) { return false; });
 
       var fm = this.fieldManager;
       $('.datepicker').on('dp.change', function(event) {
         if (fm != null)
           fm.updateField(event.currentTarget.id, this.value);
-      });
+      });*/
     } catch(e) {}
   }
 

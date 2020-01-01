@@ -13,6 +13,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataLoadingSpinnerComponent } from './core/data-loading-spinner/data-loading-spinner.component';
 import { CommonModule } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
     MatProgressSpinnerModule,
     MatTreeModule,
     ReactiveFormsModule,
-    AngularSvgIconModule
+    AngularSvgIconModule,
+    NgbModule
   ],
   providers: [HttpService, Broadcaster],
   bootstrap: [AppComponent]
