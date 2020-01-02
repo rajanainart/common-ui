@@ -14,25 +14,27 @@
                         </select>
                     </mat-form-field>
                 </div>
-                <div class="col-md-4  margin-bottom-m5px" *ngIf="field.operator == 'IN' || field.operator == 'NOT IN'">
-                    <input type="text" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
-                        required (focus)="initSelect2(field.fieldId);" [(ngModel)]="field.value1" />
+                <div class="col-md-4 width-100" *ngIf="(field.operator == 'IN' || field.operator == 'NOT IN') && data.filteredData && data.filteredData.length > 0">
+                    <select class="multi-selects width-100" style="width:100%" id="{{field.fieldId}}___1" name="{{field.fieldId}}" multiple="multiple">
+                        <option *ngFor="let s of getSelects(field.fieldId)" class="margin-2px"
+                            [ngValue]="s.value">{{s.description}}</option>
+                    </select>
                 </div>
                 <div class="col-md-2" *ngIf="field.operator != 'IN' && field.operator != 'NOT IN'">
                     <mat-form-field class="width-100" *ngIf="field.fieldType == 'TEXT' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
-                        <input matInput placeholder="Value1"  type="text" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
+                        <input matInput placeholder="Value1"  type="text" id="{{field.fieldId}}___1" name="{{field.fieldId}}___1" 
                             [(ngModel)]="field.value1" #name="ngModel">
                     </mat-form-field>
                     <mat-form-field class="width-100" *ngIf="field.fieldType == 'INTEGER' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
-                        <input matInput  placeholder="Value1"  type="text" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
+                        <input matInput  placeholder="Value1"  type="text" id="{{field.fieldId}}___1" name="{{field.fieldId}}___1" 
                             [pattern]="RegexPattern.INTEGER_REGEX" [(ngModel)]="field.value1" #name="ngModel">
                     </mat-form-field>
                     <mat-form-field class="width-100" *ngIf="field.fieldType == 'NUMERIC' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
-                        <input matInput  placeholder="Value1"  type="text" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
+                        <input matInput  placeholder="Value1"  type="text" id="{{field.fieldId}}___1" name="{{field.fieldId}}___1" 
                             [pattern]="RegexPattern.NUMERIC_REGEX" [(ngModel)]="field.value1" #name="ngModel">
                     </mat-form-field>
                     <div class="input-group form-control-sm padding-0px" *ngIf="field.fieldType == 'DATE' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
-                        <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" [(ngModel)]="field.value1_date" 
+                        <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}___1" name="{{field.fieldId}}___1" [(ngModel)]="field.value1_date" 
                             [readonly]="true" ngbDatepicker #d="ngbDatepicker" class="width-75" (dateSelect)="onDateChange($event, field, 'value1')">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
@@ -43,15 +45,15 @@
                 </div>
                 <div class="col-md-2" *ngIf="field.operator != 'IN' && field.operator != 'NOT IN'">
                     <mat-form-field class="width-100" *ngIf="field.fieldType == 'INTEGER' && (field.operator == 'BETWEEN' || field.operator == 'NOT BETWEEN')">
-                        <input matInput  placeholder="Value2"  type="text" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" 
+                        <input matInput  placeholder="Value2"  type="text" id="{{field.fieldId}}___2" name="{{field.fieldId}}___2" 
                             [pattern]="RegexPattern.INTEGER_REGEX" [(ngModel)]="field.value2" #name="ngModel">
                     </mat-form-field>
                     <mat-form-field class="width-100" *ngIf="field.fieldType == 'NUMERIC' && (field.operator == 'BETWEEN' || field.operator == 'NOT BETWEEN')">
-                        <input matInput  placeholder="Value2"  type="text" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" 
+                        <input matInput  placeholder="Value2"  type="text" id="{{field.fieldId}}___2" name="{{field.fieldId}}___2" 
                             [pattern]="RegexPattern.NUMERIC_REGEX" [(ngModel)]="field.value2" #name="ngModel">
                     </mat-form-field>
                     <div class="input-group form-control-sm padding-0px" *ngIf="field.fieldType == 'DATE' && (field.operator == 'BETWEEN' || field.operator == 'NOT BETWEEN')">
-                        <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" [(ngModel)]="field.value2_date" 
+                        <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}___2" name="{{field.fieldId}}___2" [(ngModel)]="field.value2_date" 
                             [readonly]="true" ngbDatepicker #d="ngbDatepicker" class="width-75" (dateSelect)="onDateChange($event, field, 'value2')">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
@@ -88,7 +90,7 @@
                             </a>
                         </div>
                         <div *ngIf="!meta['hideFilter']">
-                            <a href="javascript:void(0)" (click)="filterVisibility = !filterVisibility">
+                            <a href="javascript:void(0)" (click)="showFilterPanel()">
                                 <i class="fa fa-filter"></i>
                             </a>
                         </div>

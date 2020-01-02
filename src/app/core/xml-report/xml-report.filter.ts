@@ -3,7 +3,7 @@ export enum FieldType {
     NUMERIC,
     DATE,
     TEXT,
-    MULTI_SELECT
+    SELECT
 }
 
 export interface ReportFilter {
@@ -32,7 +32,7 @@ export class NotContainsReportFilter implements ReportFilter {
 
 export class EqualReportFilter implements ReportFilter {
     isTypeSupported(type : string) : boolean {
-        return type != FieldType[FieldType.MULTI_SELECT]
+        return type != FieldType[FieldType.SELECT]
     }
 
     getOperator    () : string { return "="; }
@@ -41,7 +41,7 @@ export class EqualReportFilter implements ReportFilter {
 
 export class NotEqualReportFilter implements ReportFilter {
     isTypeSupported(type : string) : boolean {
-        return type != FieldType[FieldType.MULTI_SELECT]
+        return type != FieldType[FieldType.SELECT]
     }
 
     getOperator    () : string { return "!="; }
@@ -50,7 +50,7 @@ export class NotEqualReportFilter implements ReportFilter {
 
 export class InReportFilter implements ReportFilter {
     isTypeSupported(type : string) : boolean {
-        return type == FieldType[FieldType.MULTI_SELECT];
+        return type == FieldType[FieldType.SELECT];
     }
 
     getOperator    () : string { return "IN"; }
@@ -59,7 +59,7 @@ export class InReportFilter implements ReportFilter {
 
 export class NotInReportFilter implements ReportFilter {
     isTypeSupported(type : string) : boolean {
-        return type == FieldType[FieldType.MULTI_SELECT];
+        return type == FieldType[FieldType.SELECT];
     }
 
     getOperator    () : string { return "NOT IN"; }

@@ -1,4 +1,4 @@
-import { Component, AfterContentChecked, OnInit, Input, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { ReportFieldManager } from './xml-report.field';
@@ -9,7 +9,7 @@ import { Broadcaster } from '../lib/broadcast.service';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
-declare var jquery:any;
+declare var jQuery:any;
 declare var $:any;
 
 interface XmlReportBaseMeta {
@@ -29,7 +29,7 @@ interface XmlReportMetaData extends XmlReportBaseMeta {
   styleUrls: ['./xml-report.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class XmlReportComponent implements AfterContentChecked, OnInit {
+export class XmlReportComponent implements OnInit {
 
   private gridForm : FormGroup;
   private filterVisibility : boolean = true;
@@ -180,17 +180,21 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
     });
   }
 
-  ngAfterContentChecked(): void {
-    try {
-      /*$('.datepicker').datetimepicker({ 'format' : 'MM/DD/YYYY' });
-      $('.datepicker').keydown(function(event) { return false; });
+  showFilterPanel() : void {
+    this.filterVisibility = !this.filterVisibility;
+    $('.multi-selects').select2();
 
-      var fm = this.fieldManager;
-      $('.datepicker').on('dp.change', function(event) {
-        if (fm != null)
-          fm.updateField(event.currentTarget.id, this.value);
-      });*/
-    } catch(e) {}
+    var fm = this.fieldManager;
+    $('.multi-selects').on("select2:close", function(e) {
+      var list = $('#'+this.id).val();
+      fm.updateField(this.id, list.join(','));
+   });
+  }
+
+  getSelects(key : string) : [] {
+    if (this.data.filteredData)
+      return this.data.filteredData[0][key+'_array'];
+    return [];
   }
 
   refreshData() {
@@ -229,29 +233,6 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
       $('#'+id+' > thead tr').append('<th>'+s['name']+'</th>');
       var c  = {'data':s['id']+'_select', 'type':'string', 'className':'select-checkbox'};
       cols.push(c);
-    }
-  }
-
-  initSelect2(id) : void {
-    if (this.data['multi-select'] && this.data['multi-select'][id]) {
-      var selects = this.data['multi-select'][id];
-      $('#'+id+'_1').select2({
-        multiple: true
-        ,query: function (query){
-            var data = {results: []};
-             $.each(selects, function(){
-                if(query.term.length == 0 || this.text.toUpperCase().indexOf(query.term.toUpperCase()) >= 0 ){
-                    data.results.push({id: this.value, text: this.text });
-                }
-            });
-            query.callback(data);
-        }
-      });
-      $('#'+id+'_1').select2('open');
-      var fm = this.fieldManager;
-      $('#'+id+'_1').on("change", function(e) {
-        fm.updateField(id+'_1', e.val.join(','));
-      });
     }
   }
 
@@ -339,7 +320,7 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
   }
 
   isFieldValid(form : NgForm, fieldName : string, fieldNo : number, type : number) : boolean {
-    var name = fieldName+"_"+fieldNo;
+    var name = fieldName+"___"+fieldNo;
     if (form.controls[name]) {
       if (type == 1 && form.controls[name].errors && form.controls[name].errors.required)
         return false;

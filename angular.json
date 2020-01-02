@@ -32,10 +32,12 @@
               "node_modules/devextreme/dist/css/dx.common.css",
               "node_modules/devextreme/dist/css/dx.light.css",
               "src/styles.css",
-              "src/theming.scss"
+              "src/theming.scss",
+              "src/assets/css/select2.min.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js"
+              "src/assets/js/jquery-3.4.1.min.js",
+              "src/assets/js/select2.min.js"
             ],
             "es5BrowserSupport": true
           },
@@ -130,7 +132,6 @@
               "src/styles.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.min.js"
             ],
             "assets": [
               "src/favicon.ico",

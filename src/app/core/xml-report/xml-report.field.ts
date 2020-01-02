@@ -30,7 +30,7 @@ export class ReportFieldManager {
     }
 
     updateField(id : string, value : string) {
-        var splits = id.split("_");
+        var splits = id.split("___");
         var index  = this.getFieldIndex(splits[0]);
         if (index != -1) {
             if (splits[1] == '1')
@@ -97,7 +97,7 @@ export class XmlReportField {
         this.fieldId   = fieldId;
         this.fieldName = fieldName;
         this.fieldType = fieldType;
-        if (fieldType == FieldType[FieldType.MULTI_SELECT])
+        if (fieldType == FieldType[FieldType.SELECT])
             this.operator = "IN";
         for (let f of ReportFieldManager.getAllFilters()) {
             if (f.isTypeSupported(fieldType))
