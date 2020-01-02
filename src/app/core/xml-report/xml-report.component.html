@@ -33,7 +33,7 @@
                     </mat-form-field>
                     <div class="input-group form-control-sm padding-0px" *ngIf="field.fieldType == 'DATE' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
                         <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" [(ngModel)]="field.value1_date" 
-                            ngbDatepicker #d="ngbDatepicker" class="width-75" (dateSelect)="onDateChange($event, field, 'value1')">
+                            [readonly]="true" ngbDatepicker #d="ngbDatepicker" class="width-75" (dateSelect)="onDateChange($event, field, 'value1')">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
                                 <i class="fa fa-calendar"></i>
@@ -52,7 +52,7 @@
                     </mat-form-field>
                     <div class="input-group form-control-sm padding-0px" *ngIf="field.fieldType == 'DATE' && (field.operator == 'BETWEEN' || field.operator == 'NOT BETWEEN')">
                         <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" [(ngModel)]="field.value2_date" 
-                            ngbDatepicker #d="ngbDatepicker" class="width-75" (dateSelect)="onDateChange($event, field, 'value2')">
+                            [readonly]="true" ngbDatepicker #d="ngbDatepicker" class="width-75" (dateSelect)="onDateChange($event, field, 'value2')">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
                                 <i class="fa fa-calendar"></i>
