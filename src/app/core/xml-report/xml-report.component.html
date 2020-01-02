@@ -8,8 +8,8 @@
                 <div class="col-md-3">
                     <mat-form-field class="width-100">
                         <mat-label>{{field.fieldName}}</mat-label>
-                        <select matNativeControl id="{{field.fieldId}}_Operator" name="{{field.fieldId}}_Operator" [(ngModel)]="field.operator">
-                            <option *ngFor="let filter of field.getReportFilters()" 
+                        <select class="margin-2px" matNativeControl id="{{field.fieldId}}_Operator" name="{{field.fieldId}}_Operator" [(ngModel)]="field.operator">
+                            <option *ngFor="let filter of field.getReportFilters()" class="margin-2px"
                                 [ngValue]="filter.getOperator()">{{filter.getOperatorName()}}</option>
                         </select>
                     </mat-form-field>
@@ -32,8 +32,8 @@
                             [pattern]="RegexPattern.NUMERIC_REGEX" [(ngModel)]="field.value1" #name="ngModel">
                     </mat-form-field>
                     <div class="input-group form-control-sm padding-0px" *ngIf="field.fieldType == 'DATE' && field.operator != 'NULL' && field.operator != 'NOT NULL'">
-                        <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" 
-                            [(ngModel)]="field.value1" ngbDatepicker #d="ngbDatepicker" class="width-75">
+                        <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}_1" name="{{field.fieldId}}_1" [(ngModel)]="field.value1_date" 
+                            ngbDatepicker #d="ngbDatepicker" class="width-75" (dateSelect)="onDateChange($event, field, 'value1')">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
                                 <i class="fa fa-calendar"></i>
@@ -51,8 +51,8 @@
                             [pattern]="RegexPattern.NUMERIC_REGEX" [(ngModel)]="field.value2" #name="ngModel">
                     </mat-form-field>
                     <div class="input-group form-control-sm padding-0px" *ngIf="field.fieldType == 'DATE' && (field.operator == 'BETWEEN' || field.operator == 'NOT BETWEEN')">
-                        <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" 
-                            [(ngModel)]="field.value2" ngbDatepicker #d="ngbDatepicker" class="width-75">
+                        <input placeholder="yyyy-mm-dd" id="{{field.fieldId}}_2" name="{{field.fieldId}}_2" [(ngModel)]="field.value2_date" 
+                            ngbDatepicker #d="ngbDatepicker" class="width-75" (dateSelect)="onDateChange($event, field, 'value2')">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
                                 <i class="fa fa-calendar"></i>

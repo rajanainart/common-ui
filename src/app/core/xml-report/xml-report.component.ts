@@ -7,6 +7,7 @@ import { RegexPattern } from '../lib/regex.pattern';
 import { HttpService } from '../lib/http';
 import { Broadcaster } from '../lib/broadcast.service';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
 declare var jquery:any;
 declare var $:any;
@@ -382,6 +383,15 @@ export class XmlReportComponent implements AfterContentChecked, OnInit {
       this.reportBusy = true;
       this.callRestService(event.pageIndex+1, event.pageSize);
     }
+  }
+
+  onDateChange(event : NgbDate, field : {}, property : string) : void {
+    var finalDate : string;
+    finalDate  = (event.month < 10 ? '0'+event.month : event.month)+'/';
+    finalDate += (event.day   < 10 ? '0' +event.day   : event.day )+'/';
+    finalDate +=  event.year;
+    field[property] = finalDate;
+    console.log(field);
   }
 
   static getDataTableColumnType(type : string) : string {
