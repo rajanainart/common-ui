@@ -8,7 +8,7 @@
                 <div class="col-md-3">
                     <mat-form-field class="width-100">
                         <mat-label>{{field.fieldName}}</mat-label>
-                        <select class="margin-2px" matNativeControl id="{{field.fieldId}}_Operator" name="{{field.fieldId}}_Operator" [(ngModel)]="field.operator">
+                        <select class="margin-2px" matNativeControl id="{{field.fieldId}}_Operator" name="{{field.fieldId}}_Operator" [(ngModel)]="field.operator" (ngModelChange)="onOperatorChange($event)">
                             <option *ngFor="let filter of field.getReportFilters()" class="margin-2px"
                                 [ngValue]="filter.getOperator()">{{filter.getOperatorName()}}</option>
                         </select>

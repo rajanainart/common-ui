@@ -380,6 +380,11 @@ export class XmlReportComponent implements OnInit {
     console.log(field);
   }
 
+  onOperatorChange(value : string) : void {
+    if (value == 'IN' || value == 'NOT IN')
+      $('.multi-selects').select2();
+  }
+
   static getDataTableColumnType(type : string) : string {
     var t = 'string';
     switch (type) {
