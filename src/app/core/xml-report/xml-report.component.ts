@@ -191,6 +191,11 @@ export class XmlReportComponent implements OnInit {
    });
   }
 
+  getSelect2Selected(filter : {}, value : string) : string {
+    var array = filter['value1'].split(',');
+    return array.indexOf(value) != -1 ? 'selected' : '';
+  }
+
   getSelects(key : string) : [] {
     if (this.data.filteredData)
       return this.data.filteredData[0][key+'_array'];

@@ -17,7 +17,7 @@
                 <div class="col-md-4 width-100" *ngIf="(field.operator == 'IN' || field.operator == 'NOT IN') && data.filteredData && data.filteredData.length > 0">
                     <select class="multi-selects width-100" style="width:100%" id="{{field.fieldId}}___1" name="{{field.fieldId}}" multiple="multiple">
                         <option *ngFor="let s of getSelects(field.fieldId)" class="margin-2px"
-                            [ngValue]="s.value">{{s.description}}</option>
+                            selected="{{getSelect2Selected(field, s.value)}}" [ngValue]="s.value" value="{{s.value}}">{{s.description}}</option>
                     </select>
                 </div>
                 <div class="col-md-2" *ngIf="field.operator != 'IN' && field.operator != 'NOT IN'">
