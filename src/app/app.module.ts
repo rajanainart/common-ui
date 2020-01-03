@@ -8,7 +8,7 @@ import { ReportComponent } from './components/report/report.component';
 import { XmlReportComponent } from './core/xml-report';
 import { Broadcaster } from './core/lib/broadcast.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpService } from './core/lib/http-service';
+import { HttpService } from './core/services/http-service';
 import { HttpClientModule } from '@angular/common/http';
 import { DataLoadingSpinnerComponent } from './core/data-loading-spinner/data-loading-spinner.component';
 import { CommonModule } from '@angular/common';
