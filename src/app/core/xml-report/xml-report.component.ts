@@ -8,6 +8,7 @@ import { HttpService } from '../lib/http';
 import { Broadcaster } from '../lib/broadcast.service';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { DialogService } from '../services/dialog.service';
 
 declare var jQuery:any;
 declare var $:any;
@@ -57,7 +58,8 @@ export class XmlReportComponent implements OnInit {
   RegexPattern : RegexPattern;
 
   @ViewChild(MatPaginator , {static: false}) paginator: MatPaginator;
-  constructor(private http : HttpService, private route: ActivatedRoute, private router : Router, private broadcast : Broadcaster, private fb: FormBuilder) { 
+  constructor(private http : HttpService, private route: ActivatedRoute, private router : Router, 
+              private broadcast : Broadcaster, private fb: FormBuilder, private dailogService: DialogService) { 
     var id = this.getXmlReportName();
     this.reportUrl    = environment.serviceBaseUrl+'xml-report/'+id;
     this.RegexPattern = RegexPattern;
@@ -300,6 +302,16 @@ export class XmlReportComponent implements OnInit {
         break;
     }
     if (responseType != '') {
+      if (this.meta && this.meta['pagination'] == 'SERVER') {
+        if (this.data.filteredData[0]['total-records'] > 10000 && this.fieldManager.getAllXmlFieldsWithFilter().length == 0) {
+          let msg= {
+            message : "Resultset contains more than 10000 records to export, please try to apply some filters"
+          }
+          this.dailogService.showError(msg, false);
+          this.reportBusy = false;
+          return;
+        }
+      }
       var body  = this.buildRequestContent(-1);
       var valid = this.validateFilters(body['filter']);
       if (!valid) return;

@@ -14,13 +14,19 @@ import { DataLoadingSpinnerComponent } from './core/data-loading-spinner/data-lo
 import { CommonModule } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { DialogComponent } from './core/dialog/dialog.component';
+import { DialogService } from './core/services/dialog.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     ReportComponent,
     XmlReportComponent,
-    DataLoadingSpinnerComponent
+    DataLoadingSpinnerComponent,
+    DialogComponent
+  ],
+  entryComponents: [
+    DialogComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +62,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     AngularSvgIconModule,
     NgbModule
   ],
-  providers: [HttpService, Broadcaster],
+  providers: [HttpService, Broadcaster, DialogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

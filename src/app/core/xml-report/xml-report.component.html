@@ -84,12 +84,12 @@
                 <app-data-loading-spinner *ngIf="reportBusy" class="teal-bar"></app-data-loading-spinner>
                 <div class="bridge-header mt-3" *ngIf="meta">
                     <div class="d-flex w-100 justify-content-between">
-                        <div *ngIf="!meta['hideExport']">
+                        <div *ngIf="!meta['hideExport'] && !reportBusy">
                             <a href="javascript:void(0)" (click)="onDisplayClick(e)"  *ngFor="let e of getReportMeta()['export']">
                                 <img class="icon" src="/assets/svg/{{e}}.svg" width="25px" />
                             </a>
                         </div>
-                        <div *ngIf="!meta['hideFilter']">
+                        <div *ngIf="!meta['hideFilter'] && !reportBusy">
                             <a href="javascript:void(0)" (click)="showFilterPanel()">
                                 <i class="fa fa-filter"></i>
                             </a>
