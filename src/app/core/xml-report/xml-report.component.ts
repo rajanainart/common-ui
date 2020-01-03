@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { ReportFieldManager } from './xml-report.field';
 import { NgForm, FormGroup, FormBuilder } from '@angular/forms';
 import { RegexPattern } from '../lib/regex.pattern';
-import { HttpService } from '../lib/http';
+import { HttpService } from '../lib/http-service';
 import { Broadcaster } from '../lib/broadcast.service';
 import { MatPaginator, MatTableDataSource, PageEvent } from '@angular/material';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
