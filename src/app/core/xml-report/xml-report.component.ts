@@ -38,6 +38,9 @@ export class XmlReportComponent implements OnInit {
   @Input("xmlReportName")
   xmlReportName : string;
 
+  @Input("exportLimit")
+  exportLimit : number = 10000;
+
   @Input("customAction")
   customActionString : string;
 
@@ -303,25 +306,29 @@ export class XmlReportComponent implements OnInit {
     }
     if (responseType != '') {
       if (this.meta && this.meta['pagination'] == 'SERVER') {
-        if (this.data.filteredData[0]['total-records'] > 10000 && this.fieldManager.getAllXmlFieldsWithFilter().length == 0) {
-          let msg= {
-            message : "Resultset contains more than 10000 records to export, please try to apply some filters"
-          }
-          this.dailogService.showError(msg, false);
-          this.reportBusy = false;
-          return;
-        }
-      }
-      var body  = this.buildRequestContent(-1);
-      var valid = this.validateFilters(body['filter']);
-      if (!valid) return;
-      this.http.postWithAnyHeaders(this.meta[targetUrl], body, 
-          { "responseType" : responseType }).subscribe(data => {
-            XmlReportComponent.downloadFile(this.displayType == 'json' ? JSON.stringify(data) : data, 
-                                            this.displayType, this.meta['name']+'.'+this.displayType);
+        var body  = this.buildRequestContent(-1);
+        var valid = this.validateFilters(body['filter']);
+        if (!valid) return;
+
+        this.http.post(this.meta['restCountUrl'], body).subscribe(data => {
+          if (data > this.exportLimit) {
+            let msg = {
+              message : 'Resultset contains more than '+this.exportLimit+' records to export, please try to apply some filters'
+            }
+            this.dailogService.showError(msg, false);
             this.reportBusy = false;
-      });
-      this.currentPage = 1;
+            return;
+          }
+
+          this.http.postWithAnyHeaders(this.meta[targetUrl], body, 
+              { "responseType" : responseType }).subscribe(data => {
+                XmlReportComponent.downloadFile(this.displayType == 'json' ? JSON.stringify(data) : data, 
+                                                this.displayType, this.meta['name']+'.'+this.displayType);
+                this.reportBusy = false;
+          });
+          this.currentPage = 1;
+        });
+      }
     }
   }
 
