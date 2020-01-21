@@ -305,7 +305,7 @@ export class XmlReportComponent implements OnInit {
         break;
     }
     if (responseType != '') {
-      if (this.meta && this.meta['pagination'] == 'SERVER') {
+      if (this.meta) {
         var body  = this.buildRequestContent(-1);
         var valid = this.validateFilters(body['filter']);
         if (!valid) return;
