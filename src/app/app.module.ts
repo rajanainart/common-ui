@@ -16,6 +16,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DialogComponent } from './core/dialog/dialog.component';
 import { DialogService } from './core/services/dialog.service';
+import { ReportGroupComponent } from './components/report-group/report-group.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { DialogService } from './core/services/dialog.service';
     ReportComponent,
     XmlReportComponent,
     DataLoadingSpinnerComponent,
-    DialogComponent
+    DialogComponent,
+    ReportGroupComponent
   ],
   entryComponents: [
     DialogComponent

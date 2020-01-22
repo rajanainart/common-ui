@@ -1,0 +1,11 @@
+<nav mat-tab-nav-bar *ngIf="reportGroup">
+  <a mat-tab-link
+      *ngFor="let grp of reportGroup.xmlReports"
+      [routerLink]="'/xmlreport/'+grp"
+      routerLinkActive #rla="routerLinkActive"
+      [active]="rla.isActive">
+    {{grp}}
+  </a>
+</nav>
+
+<router-outlet></router-outlet>

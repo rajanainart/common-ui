@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { ReportFieldManager } from './xml-report.field';
+import { ReportFieldManager, XmlReportBaseMeta } from './xml-report.field';
 import { NgForm, FormGroup, FormBuilder } from '@angular/forms';
 import { RegexPattern } from '../services/regex.pattern';
 import { HttpService } from '../services/http-service';
@@ -13,12 +13,7 @@ import { DialogService } from '../services/dialog.service';
 declare var jQuery:any;
 declare var $:any;
 
-interface XmlReportBaseMeta {
-  id   : string;
-  name : string;
-}
-
-interface XmlReportMetaData extends XmlReportBaseMeta {
+export interface XmlReportMetaData extends XmlReportBaseMeta {
   export    : string[];
   restUrl   : string;
   restQuery : string;

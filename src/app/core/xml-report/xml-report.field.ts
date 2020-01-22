@@ -2,6 +2,11 @@ import { ReportFilter, ContainsReportFilter, NotContainsReportFilter, EqualRepor
     InReportFilter, NotInReportFilter, GreaterThanReportFilter, GreaterThanEqualToReportFilter, LesserThanReportFilter, 
     LesserThanEqualToReportFilter, BetweenReportFilter, NotBetweenReportFilter, NullReportFilter, NotNullReportFilter, FieldType } from "./xml-report.filter";
 
+export interface XmlReportBaseMeta {
+    id   : string;
+    name : string;
+}
+
 export class ReportFieldManager {
     private static filters : ReportFilter[] = [];
 
